@@ -18,7 +18,7 @@ build:
 	docker rm tmp-rpi-rt-linux
 
 custom:
-	docker run --rm --privileged -it rpi-rt-linux -w=/raspios bash
+	docker run --rm --privileged -w /raspios -it rpi-rt-linux bash
 
 clean:
 	rm -fr build
