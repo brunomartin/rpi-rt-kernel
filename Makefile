@@ -13,12 +13,12 @@ build:
 	mkdir -p build
 	docker build --build-arg PLATFORM32=$(platform32) -t rpi-rt-linux .
 	docker rm tmp-rpi-rt-linux || true
-	docker run --privileged --name tmp-rpi-rt-linux rpi-rt-linux /raspios/build.sh
+	docker run --privileged --name tmp-rpi-rt-linux -w /raspios rpi-rt-linux ./build.sh
 	docker cp tmp-rpi-rt-linux:/raspios/build/ ./
 	docker rm tmp-rpi-rt-linux
 
 custom:
-	docker run --rm --privileged -it rpi-rt-linux bash
+	docker run --rm --privileged -it rpi-rt-linux -w=/raspios bash
 
 clean:
 	rm -fr build

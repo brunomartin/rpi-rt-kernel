@@ -53,13 +53,18 @@ RUN ./scripts/config --set-val CONFIG_RCU_BOOST_DELAY 500
 
 RUN make -j4 Image modules dtbs
 
+# https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-09-26/2022-09-22-raspios-bullseye-arm64-lite.img.xz
+
 WORKDIR /raspios
 RUN apt -y install
-RUN export DATE=$(curl -s https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/ | sed -n 's:.*${RASPIOS_IMAGE_NAME}-\(.*\)/</a>.*:\1:p' | tail -1) && \
-    export RASPIOS=$(curl -s https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/${RASPIOS_IMAGE_NAME}-${DATE}/ | sed -n 's:.*<a href="\(.*\).xz">.*:\1:p' | tail -1) && \
+# RUN export DATE=$(curl -s https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/ | sed -n 's:.*${RASPIOS_IMAGE_NAME}-\(.*\)/</a>.*:\1:p' | tail -1) && \
+RUN export DATE="2022-09-26" && \
+    # export RASPIOS=$(curl -s https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/${RASPIOS_IMAGE_NAME}-${DATE}/ | sed -n 's:.*<a href="\(.*\).xz">.*:\1:p' | tail -1) && \
+    export RASPIOS="2022-09-22-raspios-bullseye-arm64-lite" && \
     echo "Downloading ${RASPIOS}.xz" && \
-    curl https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/${RASPIOS_IMAGE_NAME}-${DATE}/${RASPIOS}.xz --output ${RASPIOS}.xz && \
-    xz -d ${RASPIOS}.xz
+    echo $(https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/${RASPIOS_IMAGE_NAME}-${DATE}/${RASPIOS}.img.xz --output ${RASPIOS}.img.xz) && \
+    curl https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/${RASPIOS_IMAGE_NAME}-${DATE}/${RASPIOS}.img.xz --output ${RASPIOS}.img.xz && \
+    xz -d ${RASPIOS}.img.xz
 
 RUN mkdir /raspios/mnt && mkdir /raspios/mnt/disk && mkdir /raspios/mnt/boot
 ADD build.sh ./build.sh
